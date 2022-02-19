@@ -18,7 +18,7 @@ from linebot.models import (
 
 import os
 import json
-from numpy import place
+import numpy
 
 import requests
 import pprint
@@ -185,9 +185,9 @@ def handle_message(event):
         elif hour >= 6 and hour <= 12:
             chanceOfRain = data['forecasts'][0]['chanceOfRain']['T06_12']
         elif hour >= 12 and hour <=18:
-            chanceOfRain = data['forecasts'][0]['chanceOfRain']['T012_18']
+            chanceOfRain = data['forecasts'][0]['chanceOfRain']['T12_18']
         else:
-            chanceOfRain = data['forecasts'][0]['chanceOfRain']['T018_24']
+            chanceOfRain = data['forecasts'][0]['chanceOfRain']['T18_24']
         # chanceOfRain_today = data['forecasts'][0]['chanceOfRain']['T00_06']
         # chanceOfRain_tomorrow = data['forecasts'][1]['chanceOfRain']['T00_06']
         # chanceOfRain_tomorrow2 = data['forecasts'][2]['chanceOfRain']['T00_06']
