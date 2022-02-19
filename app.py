@@ -18,6 +18,11 @@ from linebot.models import (
 
 import os
 import json
+from numpy import place
+
+import requests
+import pprint
+from datetime import datetime
 
 
 # ウェブアプリケーションフレームワーク:flaskの定義
@@ -126,21 +131,21 @@ def handle_message(event):
             ]
         )
 
-    elif "通知" in text:
-        # 全ユーザにプッシュ
-        line_bot_api.broadcast(
-            TextSendMessage(text="通知テスト")
-        )   
+    # elif "通知" in text:
+    #     # 全ユーザにプッシュ
+    #     line_bot_api.broadcast(
+    #         TextSendMessage(text="通知テスト")
+    #     )   
 
-    elif "全員通知" in text:
-        # 全ユーザにプッシュ
-        img_url = "https://1.bp.blogspot.com/-Q9jOqnVqGuo/W64DqXTxwfI/AAAAAAABPIk/mn0XoaVlL2s_Sphqb-5WielV75A6JIEowCLcBGAs/s800/job_yarigai_sausyu.png"
-        line_bot_api.broadcast(
-            [
-                TextSendMessage(text="全ユーザーに通知します"),
-                ImageSendMessage(img_url, img_url)
-            ]
-        )   
+    # elif "全員通知" in text:
+    #     # 全ユーザにプッシュ
+    #     img_url = "https://1.bp.blogspot.com/-Q9jOqnVqGuo/W64DqXTxwfI/AAAAAAABPIk/mn0XoaVlL2s_Sphqb-5WielV75A6JIEowCLcBGAs/s800/job_yarigai_sausyu.png"
+    #     line_bot_api.broadcast(
+    #         [
+    #             TextSendMessage(text="全ユーザーに通知します"),
+    #             ImageSendMessage(img_url, img_url)
+    #         ]
+    #     )   
 
     elif "ユーザーid" in text:
         line_bot_api.reply_message(
@@ -151,6 +156,49 @@ def handle_message(event):
     elif "idを送る" in text:
         messages = TextSendMessage(text="Hellow!!")
         line_bot_api.push_message(user_id, messages=messages)
+
+    elif "天気" in text:
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(text="気象庁のサイトです\n\nhttps://www.jma.go.jp/bosai/map.html#6/31.128/137.285/&contents=forecast\nhttps://www.jma.go.jp/bosai/forecast/")
+            ]
+         )
+         
+    elif "傘" in text:
+        #現在の時刻を取得
+        today = datetime.now()
+        hour = today.hour
+
+
+        #天気予報APIのurlとクエリ
+        url_tenki = "https://weather.tsukumijima.net/api/forecast/"
+        param = {'city':'240010'}
+        # APIからのレスポンス
+        response = requests.get(url_tenki, params = param)
+        #pythonの辞書に変換
+        data = response.json()
+        place = data['publishingOffice']
+
+        if hour >= 0 and hour <= 6:
+            chanceOfRain = data['forecasts'][0]['chanceOfRain']['T00_06']
+        elif hour >= 6 and hour <= 12:
+            chanceOfRain = data['forecasts'][0]['chanceOfRain']['T06_12']
+        elif hour >= 12 and hour <=18:
+            chanceOfRain = data['forecasts'][0]['chanceOfRain']['T012_18']
+        else:
+            chanceOfRain = data['forecasts'][0]['chanceOfRain']['T018_24']
+        # chanceOfRain_today = data['forecasts'][0]['chanceOfRain']['T00_06']
+        # chanceOfRain_tomorrow = data['forecasts'][1]['chanceOfRain']['T00_06']
+        # chanceOfRain_tomorrow2 = data['forecasts'][2]['chanceOfRain']['T00_06']
+
+
+        line_bot_api.reply_message(
+            event.reply_token,
+            [
+                TextSendMessage(text=f"降水確率は{chanceOfRain:.2f}です。\n傘を忘れずに持って行ってください。")
+            ]
+         )
 
     else:
     	line_bot_api.reply_message(
