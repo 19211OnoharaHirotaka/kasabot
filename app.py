@@ -196,7 +196,7 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             [
-                TextSendMessage(text=f"降水確率は{chanceOfRain:.2f}です。\n傘を忘れずに持って行ってください。")
+                TextSendMessage(text=f"降水確率は{chanceOfRain}です。\n傘を忘れずに持って行ってください。")
             ]
          )
 
