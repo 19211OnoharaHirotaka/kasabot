@@ -23,6 +23,7 @@ import numpy
 import requests
 import pprint
 from datetime import datetime
+import re
 
 
 # ウェブアプリケーションフレームワーク:flaskの定義
@@ -180,14 +181,54 @@ def handle_message(event):
         data = response.json()
         place = data['publishingOffice']
 
+        #直近の時間ごとに取得する降水確率を変える
         if hour >= 0 and hour <= 6:
             chanceOfRain = data['forecasts'][0]['chanceOfRain']['T00_06']
+            result = re.sub(r"\D", "", chanceOfRain)
+            ame = int(result)
+            kasa = ''
+            if ame >= 20 and ame <= 60:
+                kasa = '折り畳み傘を忘れずに持って行ってください。'
+            elif ame >= 60:
+                kasa = '長傘を忘れずに持って行ってください。'
+            else:
+                kasa = '傘を持って行かなくて大丈夫です。'
+
         elif hour >= 6 and hour <= 12:
             chanceOfRain = data['forecasts'][0]['chanceOfRain']['T06_12']
+            result = re.sub(r"\D", "", chanceOfRain)
+            ame = int(result)
+            kasa = ''
+            if ame >= 20 and ame <= 60:
+                kasa = '折り畳み傘を忘れずに持って行ってください。'
+            elif ame >= 60:
+                kasa = '長傘を忘れずに持って行ってください。'
+            else:
+                kasa = '傘を持って行かなくて大丈夫です。'
+
         elif hour >= 12 and hour <=18:
             chanceOfRain = data['forecasts'][0]['chanceOfRain']['T12_18']
+            result = re.sub(r"\D", "", chanceOfRain)
+            ame = int(result)
+            kasa = ''
+            if ame >= 20 and ame <= 60:
+                kasa = '折り畳み傘を忘れずに持って行ってください。'
+            elif ame >= 60:
+                kasa = '長傘を忘れずに持って行ってください。'
+            else:
+                kasa = '傘を持って行かなくて大丈夫です。'
+
         else:
             chanceOfRain = data['forecasts'][0]['chanceOfRain']['T18_24']
+            result = re.sub(r"\D", "", chanceOfRain)
+            ame = int(result)
+            kasa = ''
+            if ame >= 20 and ame <= 60:
+                kasa = '折り畳み傘を忘れずに持って行ってください。'
+            elif ame >= 60:
+                kasa = '長傘を忘れずに持って行ってください。'
+            else:
+                kasa = '傘を持って行かなくて大丈夫です。'
         # chanceOfRain_today = data['forecasts'][0]['chanceOfRain']['T00_06']
         # chanceOfRain_tomorrow = data['forecasts'][1]['chanceOfRain']['T00_06']
         # chanceOfRain_tomorrow2 = data['forecasts'][2]['chanceOfRain']['T00_06']
@@ -196,7 +237,7 @@ def handle_message(event):
         line_bot_api.reply_message(
             event.reply_token,
             [
-                TextSendMessage(text=f"降水確率は{chanceOfRain}です。\n傘を忘れずに持って行ってください。")
+                TextSendMessage(text=f"降水確率は{chanceOfRain}です。\n{kasa}")
             ]
          )
 
