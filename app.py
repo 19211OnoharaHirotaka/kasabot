@@ -184,7 +184,9 @@ def handle_message(event):
         #直近の時間ごとに取得する降水確率を変える
         if hour >= 0 and hour <= 6:
             chanceOfRain = data['forecasts'][0]['chanceOfRain']['T00_06']
+            #取得した降水確率の文字列の数字だけを抽出 (抽出するだけなのでまだ文字列)
             result = re.sub(r"\D", "", chanceOfRain)
+            #文字列を数字に変換
             ame = int(result)
             kasa = ''
             if ame >= 20 and ame <= 60:

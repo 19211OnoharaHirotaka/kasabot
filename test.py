@@ -4,7 +4,7 @@ import re
 
 #天気予報APIのurlとクエリ
 url = "https://weather.tsukumijima.net/api/forecast/"
-param = {'city':'150020'}
+param = {'city':'240010'}
 
 # APIからのレスポンス
 response = requests.get(url, params = param)
